@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { getGlobleData, getCountries } from "../src/ServiceRequests/index";
+import Cards from "./components/Cards/Cards";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Countrypicker from "./components/CountryPicker/countrypicker";
+import Chart from "./components/Chart/Chart";
+class App extends React.Component {
+  state = {
+    data: {},
+    country: "",
+  };
+
+  async componentDidMount() {
+    const getData = await getGlobleData();
+    this.setState({ data: { ...getData } });
+    console.log(this.state.data);
+  }
+
+  handleCountryChange = async (country) => {
+    const getData = await getGlobleData(country);
+    this.setState({ data: { ...getData }, country: country });
+  };
+
+  render() {
+    return (
+      <div className="container-fluid">
+        <div className="row d-flex justify-content-center mt-5">
+          <img className="img-fluid" src="https://i.ibb.co/7QpKsCX/image.png" />
+        </div>
+        <Cards data={this.state.data} />
+
+        <Countrypicker handleCountryChange={this.handleCountryChange} />
+        <Chart data={this.state.data} country={this.state.country} />
+      </div>
+    );
+  }
 }
-
 export default App;
